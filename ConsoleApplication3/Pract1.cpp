@@ -1,470 +1,234 @@
-﻿#include <iostream>
-#include <cstdlib>
-#include <chrono>
-
+#include <iostream>
+#include <cmath>
+#include <ctype.h>
+#include <iomanip>
 using namespace std;
-using namespace chrono;
 
-
-int fill_mas(int mas[], const int size, int mas_unsorted[]) {
-    cout << "Выбрана команда: 1\n";
-    srand(time(NULL));
-    for (int i = 0; i < size; i++) {
-        mas[i] = rand() % 199 - 99;
-        mas_unsorted[i] = mas[i];
-    }
-
-    cout << "Массив успешно создан\n\n";
-    return(0);
+int sizes(int number_choise) {
+	cout << "Выбрана команда: " << number_choise << "\n\n";
+	cout << "int: " << sizeof(int) << "\n";
+	cout << "short int: " << sizeof(short int) << "\n";
+	cout << "long int: " << sizeof(long int) << "\n";
+	cout << "float: " << sizeof(float) << "\n";
+	cout << "double: " << sizeof(double) << "\n";
+	cout << "long double: " << sizeof(long double) << "\n";
+	cout << "char: " << sizeof(char) << "\n";
+	cout << "bool: " << sizeof(bool) << "\n";
+	return 0;
 }
 
-int print_mas(int mas[], const int size, bool flag) {
-    cout << "Выбрана команда: 9\n";
-    if (flag) {
-        cout << "Массив:\n";
-        for (int i = 0; i < size; i++) {
-            cout << mas[i] << " ";
-        }
-        cout << "\n\n";
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
+
+int bin_Int(int number_choise) {
+	cout << "Выбрана команда: " << number_choise << "\n\n";
+	unsigned int bytes = 32, masks = 1 << bytes - 1, int_num;
+	int A1[32] = {};
+	cout << "Введите целое число\n";
+
+	while (!(cin >> int_num)) {
+		cout << "Ошибка, введен неподходящий тип данных\n";
+		cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
+
+	while (int_num != 0) {
+
+		for (int i = 0; i < bytes; i++) 
+		{
+			putchar(int_num & masks ? '1' : '0');
+			A1[i] = (int_num & masks ? 1 : 0);
+			int_num <<= 1;
+			cout << (i == 0 || i % 8 == 0 ? " " : "");
+		}
+
+		cout << "\nПоменять местами заданные пользователем биты\n"
+			"[1]ДА\n"
+			"[2]НЕТ\n";
+
+		int choises, a1, a2, temp, s = 0;
+
+		while (!(cin >> choises)) {
+			cout << "Ошибка, введен неподходящий тип данных\n";
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+
+		if (choises == 1) {
+			cout << "Какие элементы поменять местами? ";
+			cin >> a1 >> a2;
+			if (a1 < a2) {
+				temp = A1[a1 - 1];
+				A1[a1 - 1] = A1[a2 - 1];
+				A1[a2 - 1] = temp;
+			}
+			else {
+				temp = A1[a2 - 1];
+				A1[a2 - 1] = A1[a1 - 1];
+				A1[a1 - 1] = temp;
+			}
+
+			for (int i = 0; i < bytes; i++) {
+				cout << A1[i];
+				cout << (i == 0 || i % 8 == 0 ? " " : "");
+			}
+
+			cout << "\n";
+
+			for (int i = 0; i < bytes; i++) {
+				s = s + (A1[i] * pow(2, (bytes - 1 - i)));
+			}
+
+			cout << "Измененное число: " << s << "\n";
+		}
+		cout << "Введите число: ";
+		cout << "\n";
+		
+		while (!(cin >> int_num)) {
+			cout << "Ошибка, введен неподходящий тип данных\n";
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+
+
+	}
+	return 0;
 }
 
-int sort_mas(int mas[], const int size, bool flag) {
-    cout << "Выбрана команда: 2\n";
+int bin_Float(int number_choise) {
+	cout << "Выбрана команда: " << number_choise << "\n\n";
+	union
+	{
+		int int_Float;
+		float float_Num;
+	};
+	unsigned int bites = sizeof(int) * 8, mask = 1 << bites - 1;
+	int A1[32] = {};
+	cout << "Введите вещественное число\n";
 
-    time_point<steady_clock, duration<__int64, ratio<1, 1000000000>>> start, end;
-    nanoseconds result;
+	while (!(cin >> float_Num)) {
+		cout << "Ошибка, введен неподходящий тип данных\n";
+		cin.clear();
+		std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+	}
 
-    start = steady_clock::now();
+	while (float_Num != 0) {
 
-    if (flag) {
-        int temp;
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - 1; j++) {
-                if (mas[j] > mas[j + 1]) {
-                    temp = mas[j];
-                    mas[j] = mas[j + 1];
-                    mas[j + 1] = temp;
-                }
-            }
-        }
+		for (int i = 0; i < bites; i++)
+		{
+			putchar(int_Float & mask ? '1' : '0');
+			A1[i] = (int_Float & mask ? 1 : 0);
+			int_Float <<= 1;
+			if (i == 0 || i == 1 || i == 8)
+				putchar(' ');
+		}
 
-        end = steady_clock::now();
-        result = duration_cast<nanoseconds>(end - start);
+		cout << "\nПоменять местами заданные пользователем биты\n"
+			"[1]ДА\n"
+			"[2]НЕТ\n";
 
-        cout << "Массив отсортирован\n";
-        cout << "Время сортировки(в наносекундах): " << result.count() << "\n";
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
+		int choises, a1, a2, temp;
+		float s = 0;
+
+		while (!(cin >> choises)) {
+			cout << "Ошибка, введен неподходящий тип данных\n";
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+
+		if (choises == 1) {
+			cout << "Какие элементы поменять местами? ";
+			cin >> a1 >> a2;
+			if (a1 < a2) {
+				temp = A1[a1 - 1];
+				A1[a1 - 1] = A1[a2 - 1];
+				A1[a2 - 1] = temp;
+			}
+			else {
+				temp = A1[a2 - 1];
+				A1[a2 - 1] = A1[a1 - 1];
+				A1[a1 - 1] = temp;
+			}
+
+			for (int i = 0; i < bites; i++) {
+				cout << A1[i];
+				cout << (i == 0 || i == 1 || i == 8 ? " " : "");
+			}
+
+			cout << "\n";
+
+			for (int i = 0; i < bites; i++) {
+				s = s + (A1[i] * pow(2, (bites - 1 - i)));
+			}
+
+			cout << "Измененное число: " << s << "\n";
+		}
+		cout << "Введите число: ";
+		cout << "\n";
+
+		while (!(cin >> float_Num)) {
+			cout << "Ошибка, введен неподходящий тип данных\n";
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+
+	}
+	return 0;
 }
 
-int find_max_min(int mas[], const int size, bool flag, int mas_unsorted[]) {
-    cout << "Выбрана команда: 3\n";
-    if (flag) {
 
-        int temp;
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - 1; j++) {
-                if (mas[j] > mas[j + 1]) {
-                    temp = mas[j];
-                    mas[j] = mas[j + 1];
-                    mas[j + 1] = temp;
-                }
-            }
-        }
 
-        int max = mas[0], min = mas[0];
-
-        time_point<steady_clock, duration<__int64, ratio<1, 1000000000>>> start, end;
-        nanoseconds result;
-
-        start = steady_clock::now();
-
-        for (int i = 0; i < size; i++) {
-            if (mas[i] > max) {
-                max = mas[i];
-            }
-        }
-        for (int i = 0; i < size; i++) {
-            if (mas[i] < min) {
-                min = mas[i];
-            }
-        }
-
-        end = steady_clock::now();
-        result = duration_cast<nanoseconds>(end - start);
-
-        cout << "Максимальное значение: " << max << "\n";
-        cout << "Минимальное значение: " << min << "\n";
-        cout << "Время поиска в отсортированном массиве(в наносекундах): " << result.count() << "\n\n";
-
-        int max_ = mas_unsorted[0], min_ = mas_unsorted[0];
-
-        start = steady_clock::now();
-
-        for (int i = 0; i < size; i++) {
-            if (mas_unsorted[i] > max_) {
-                max_ = mas_unsorted[i];
-            }
-        }
-        for (int i = 0; i < size; i++) {
-            if (mas_unsorted[i] < min_) {
-                min_ = mas_unsorted[i];
-            }
-        }
-
-        end = steady_clock::now();
-        result = duration_cast<nanoseconds>(end - start);
-
-        cout << "Максимальное значение: " << max_ << "\n";
-        cout << "Минимальное значение: " << min_ << "\n";
-        cout << "Время поиска в неотсортированном массиве(в наносекундах): " << result.count() << "\n";
-
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
-}
-
-int middle_max_min(int mas[], const int size, bool flag, int mas_unsorted[]) {
-    cout << "Выбрана команда: 4\n\n";
-    if (flag) {
-
-        int temp;
-        for (int i = 0; i < size - 1; i++) {
-            for (int j = 0; j < size - 1; j++) {
-                if (mas[j] > mas[j + 1]) {
-                    temp = mas[j];
-                    mas[j] = mas[j + 1];
-                    mas[j + 1] = temp;
-                }
-            }
-        }
-
-        time_point<steady_clock, duration<__int64, ratio<1, 1000000000>>> start, end;
-        nanoseconds result;
-
-        start = steady_clock::now();
-
-        int max = mas[0], min = mas[0];
-        for (int i = 0; i < size; i++) {
-            if (mas[i] > max) {
-                max = mas[i];
-            }
-        }
-        for (int i = 0; i < size; i++) {
-            if (mas[i] < min) {
-                min = mas[i];
-            }
-        }
-
-        end = steady_clock::now();
-        result = duration_cast<nanoseconds>(end - start);
-
-        int middle = (max + min) / 2;
-        int count = 0;
-        cout << "Среднее значение: " << middle << "\n";
-        cout << "Индексы элементов, равные среднему значению: ";
-        for (int i = 0; i < size; i++) {
-            if (mas[i] == middle) {
-                cout << i << " ";
-                count += 1;
-            }
-        }
-        cout << "\nКоличество: " << count << "\n";
-        cout << "Время поиска в отсортированном массиве(в наносекундах): " << result.count() << "\n\n";
-
-        start = steady_clock::now();
-
-        int max_ = mas_unsorted[0], min_ = mas_unsorted[0];
-        for (int i = 0; i < size; i++) {
-            if (mas_unsorted[i] > max_) {
-                max_ = mas_unsorted[i];
-            }
-        }
-        for (int i = 0; i < size; i++) {
-            if (mas_unsorted[i] < min_) {
-                min_ = mas_unsorted[i];
-            }
-        }
-
-        end = steady_clock::now();
-        result = duration_cast<nanoseconds>(end - start);
-
-        int middle_ = (max_ + min_) / 2;
-        int count_ = 0;
-        cout << "Среднее значение: " << middle_ << "\n";
-        cout << "Индексы элементов, равные среднему значению: ";
-        for (int i = 0; i < size; i++) {
-            if (mas[i] == middle_) {
-                cout << i << " ";
-                count_ += 1;
-            }
-        }
-        cout << "\nКоличество: " << count_ << "\n";
-        cout << "Время поиска в неотсортированном массиве(в наносекундах): " << result.count() << "\n";
-
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
-}
-
-int less_than_a(int mas[], const int size, bool flag, bool flag_sort) {
-    cout << "Выбрана команда: 5\n";
-    if (flag) {
-        if (flag_sort) {
-            cout << "Введите число: ";
-            int a, count = 0;
-
-            while (!(cin >> a)) {
-                cout << "Ошибка ввода. Неправильный тип данных.\n";
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-
-            for (int i = 0; i < size; i++) {
-                if (mas[i] < a) {
-                    count += 1;
-                }
-            }
-            cout << "\nКоличество элементов, меньших, чем а: " << count << "\n";
-        }
-        else {
-            cout << "Массив не отсортирован\n";
-        }
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
-}
-
-int more_than_b(int mas[], const int size, bool flag, bool flag_sort) {
-    cout << "Выбрана команда: 6\n";
-    if (flag) {
-        if (flag_sort) {
-            int b, count = 0;
-            cout << "Введите число: ";
-
-            while (!(cin >> b)) {
-                cout << "Ошибка ввода. Неправильный тип данных.\n";
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-
-            for (int i = 0; i < size; i++) {
-                if (mas[i] > b) {
-                    count += 1;
-                }
-            }
-            cout << "\nКоличество элементов, больших, чем b: " << count << "\n";
-        }
-        else {
-            cout << "Массив не отсортирован\n";
-        }
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
-}
-
-int binary_Search(int mas[], const int size, bool flag, bool flag_sort, int start, int end, int value) {
-    if (flag) {
-        if (flag_sort) {
-            if (end >= start) {
-                int mid = start + (end - start) / 2;
-
-                if (mas[mid] == value) {
-                    return mid;
-                }
-
-                if (mas[mid] > value) {
-                    return binary_Search(mas, size, flag, flag_sort, start, mid - 1, value);
-                }
-
-                return binary_Search(mas, size, flag, flag_sort, mid + 1, end, value);
-            }
-        }
-        else {
-            cout << "Массив не отсортирован\n";
-        }
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(-1);
-}
-
-int transpose(int mas[], const int size, bool flag) {
-    cout << "Выбрана команда: 8\n";
-    if (flag) {
-        int elem1, elem2;
-        cout << "Введите индексы: ";
-        cin >> elem1 >> elem2;
-        int temp;
-
-        time_point<steady_clock, duration<__int64, ratio<1, 1000000000>>> start, end;
-        nanoseconds results;
-
-        start = steady_clock::now();
-
-        temp = mas[elem1 - 1];
-        mas[elem1 - 1] = mas[elem2 - 1];
-        mas[elem2 - 1] = mas[elem1 - 1];
-        cout << "Элементы переставлены\n";
-
-        end = steady_clock::now();
-        results = duration_cast<nanoseconds>(end - start);
-
-        cout << "Время перестановки(в наносекундах): " << results.count() << endl;
-    }
-    else {
-        cout << "Массив не создан\n";
-    }
-    return(0);
-}
 
 int main()
 {
-    setlocale(LC_ALL, "RU");
-    bool flag = false, flag_sort = false;
-    int num = 1;
-    const int size = 100;
-    int mas[size] = {};
-    int mas_unsorted[size] = {};
-    while (num != 0) {
-        cout << "Введите команду: \n"
-            "[1]Заполнить массив\n"
-            "[2]Сортировка массива\n"
-            "[3]Вывод максимального и минимального значений\n"
-            "[4]Вывод среднего результата максимального и минимального значений\n"
-            "[5]Вывод количества элементов массива, меньших, чем число a\n"
-            "[6]Вывод количества элементов массива, больших, чем число b\n"
-            "[7]Бинарный поиск\n"
-            "[8]Поменять местами элементы массива\n"
-            "[9]Вывести массив\n"
-            "[0]Выход из программы\n";
-        cout << "Команда: ";
+	double number = 1;
+	setlocale(LC_ALL, "RU");
+	while (number != 0) {
+		cout << "Введите номер команды:\n"
+			"[1]Вывод размерности типов данных.\n"
+			"[2]Вывод двоичной записи целого числа в представлении памяти.\n"
+			"[3]Вывод двоичной записи вещественного числа в представлении памяти.\n"
+			"[0]Выход из программы.\n";
+		cout << "Команда №: ";
+		while (!(cin >> number)) {
+			cout << "Ошибка, введен неподходящий тип данных\n";
+			cin.clear();
+			std::cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
+		}
+		int number_choise = floor(number);
+		cout << "Принята команда: " << number_choise;
+		cout << "\n";
+		if (number_choise == 1 || number_choise == 2 || number_choise == 3 || number_choise == 0) {
 
-        while (!(cin >> num)) {
-            cout << "Ошибка ввода. Неправильный тип данных.\n";
-            cin.clear();
-            cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-        }
-        switch (num) {
+			switch (number_choise) {
 
-        case(1):
-            system("cls");
-            fill_mas(mas, size, mas_unsorted);
-            flag = true;
-            system("pause");
-            break;
-
-        case(2):
-            system("cls");
-            sort_mas(mas, size, flag);
-            flag_sort = true;
-            system("pause");
-            break;
-
-        case(3):
-            system("cls");
-            find_max_min(mas, size, flag, mas_unsorted);
-            system("pause");
-            break;
-
-        case(4):
-            system("cls");
-            middle_max_min(mas, size, flag, mas_unsorted);
-            system("pause");
-            break;
-
-        case(5):
-            system("cls");
-            less_than_a(mas, size, flag, flag_sort);
-            system("pause");
-            break;
-
-        case(6):
-            system("cls");
-            more_than_b(mas, size, flag, flag_sort);
-            system("pause");
-            break;
-
-        case(7):
-            system("cls");
-            int value;
-            cout << "Выбрана команда: 7\nВведите число: ";
-
-            while (!(cin >> value)) {
-                cout << "Ошибка ввода. Неправильный тип данных.\n";
-                cin.clear();
-                cin.ignore(std::numeric_limits<std::streamsize>::max(), '\n');
-            }
-
-            if (num == 7) {
-                time_point<steady_clock, duration<__int64, ratio<1, 1000000000>>> start, end;
-                nanoseconds results;
-
-                start = steady_clock::now();
-
-                int result = binary_Search(mas, size, flag, flag_sort, 0, size - 1, value);
-
-
-                if (result == -1) {
-                    cout << "Элемент не найден" << endl;
-                }
-                else {
-                    cout << "Элемент находится в позиции " << result + 1 << endl;
-
-                    end = steady_clock::now();
-                    results = duration_cast<nanoseconds>(end - start);
-
-                    cout << "Время бинарного поиска(в наносекундах): " << results.count() << endl;
-
-                    start = steady_clock::now();
-
-                    for (int i = 0; i < size; i++) {
-                        if (mas[i] == value) {
-                            cout << "Элемент находится в позиции " << i + 1 << endl;
-                            break;
-                        }
-                    }
-
-                    end = steady_clock::now();
-                    results = duration_cast<nanoseconds>(end - start);
-                    cout << "Время обычного перебора(в наносекундах): " << results.count() << endl;
-                }
-            }
-            system("pause");
-            break;
-
-        case(8):
-            system("cls");
-            transpose(mas, size, flag);
-            flag_sort = false;
-            system("pause");
-            break;
-
-        case(9):
-            system("cls");
-            print_mas(mas, size, flag);
-            system("pause");
-            break;
-
-        }
-        system("cls");
-    }
-    return(0);
+			case(1):
+			{
+				system("cls");
+				sizes(number_choise);
+				system("pause");
+				break;
+			}
+			case(2):
+			{
+				system("cls");
+				bin_Int(number_choise);
+				system("pause");
+				break;
+			}
+			case(3):
+			{
+				system("cls");
+				bin_Float(number_choise);
+				system("pause");
+				break;
+			}
+			}
+		}
+		else
+		{
+			cout << "Введите число из диапазона цифр 0 - 3\n\n";
+			system("pause");
+		}
+		system("cls");
+	}
 }
+	
